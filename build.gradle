@@ -9,7 +9,7 @@ buildscript {
         google()
     }
     dependencies {
-        
+
 
     }
 }
@@ -42,6 +42,13 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
+    repositories {
+
+        flatDir {
+
+            dirs('../libs')
+        }
+    }
 
     dependencies {
         implementation project(":core")
@@ -54,8 +61,12 @@ project(":desktop") {
         // https://mvnrepository.com/artifact/io.netty/netty-all
         implementation group: 'io.netty', name: 'netty-all', version: '4.2.0.RC4'
 
-        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
-        implementation group: 'com.google.flatbuffers', name: 'flatbuffers-java', version: '25.2.10'
+        //https://stackoverflow.com/questions/20700053/how-to-add-local-jar-file-dependency-to-build-gradle-file
+        //https://www.baeldung.com/gradle-dependencies-local-jar
+        //https://stackoverflow.com/questions/45792184/how-to-add-a-jar-file-to-an-existing-gradle-project
+        //https://www.matheusmello.io/posts/java-how-to-add-local-jar-file-dependency-to-build-gradle-file
+        //https://stackoverflow.com/questions/31471750/how-to-add-external-jar-files-in-gradle-project-inside-the-netbeans/40262145
+        implementation group: 'cz.radovanmoncek', name: 'nettgame_tables', version: '0.1'
     }
 }
 
@@ -73,6 +84,14 @@ project(":core") {
 project(":test"){
     apply plugin: "java-library"
 
+    repositories {
+
+        flatDir {
+
+            dirs('../libs')
+        }
+    }
+
     dependencies {
         implementation project(":desktop")
 
@@ -85,7 +104,6 @@ project(":test"){
         // https://mvnrepository.com/artifact/io.netty/netty-all
         implementation group: 'io.netty', name: 'netty-all', version: '4.2.0.RC4'
 
-        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
-        implementation group: 'com.google.flatbuffers', name: 'flatbuffers-java', version: '25.2.10'
+        implementation group: 'cz.radovanmoncek', name: 'nettgame_tables', version: '0.1'
     }
 }

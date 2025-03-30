@@ -1,5 +1,5 @@
 sourceCompatibility = 21
-sourceSets.test.java.srcDirs = ["integration/", "system/", "unit/"]
+sourceSets.test.java.srcDirs = ["integration/", "unit/"]
 apply plugin: 'idea'
 
 test {

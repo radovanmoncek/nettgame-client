@@ -2,7 +2,7 @@ sourceCompatibility = 21
 sourceSets.main.java.srcDirs = [ "src/"]
 sourceSets.main.resources.srcDirs = ["../assets"]
 
-project.ext.mainClassName = "cz.radovanmoncek.client.ship.launcher.NettgameClientLauncher"
+project.ext.mainClassName = "cz.radovanmoncek.ship.launcher.NettgameClientLauncher"
 project.ext.assetsDir = new File("../assets")
 
 import org.gradle.internal.os.OperatingSystem
@@ -42,7 +42,6 @@ tasks.register('dist', Jar) {
     }
     with jar
 }
-
 
 dist.dependsOn classes
 
