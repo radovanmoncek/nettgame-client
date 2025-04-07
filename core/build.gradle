@@ -3,4 +3,4 @@ sourceCompatibility = 21
 
 sourceSets.main.java.srcDirs = [ "src/" ]
 
-//idea.project.name = appName + "-core"
+//TODO: idea.project.name = appName + "-core"

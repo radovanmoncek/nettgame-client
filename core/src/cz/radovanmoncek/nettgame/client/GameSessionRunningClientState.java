@@ -1,4 +1,4 @@
-package cz.radovanmoncek.modules.games.states;
+package cz.radovanmoncek.nettgame.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,13 +12,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import cz.radovanmoncek.modules.games.models.RequestFlatBuffersSerializable;
-import cz.radovanmoncek.ship.parents.states.ClientState;
-import cz.radovanmoncek.ship.tables.Character;
-import cz.radovanmoncek.ship.tables.GameState;
-import cz.radovanmoncek.ship.tables.GameStatus;
-import cz.radovanmoncek.ship.tables.Player;
+import com.google.flatbuffers.FlatBufferBuilder;
+import cz.radovanmoncek.nettgame.tables.*;
+import cz.radovanmoncek.nettgame.tables.Character;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -31,10 +29,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameSessionRunningClientState implements ClientState {
+
     private static final Logger logger = Logger.getLogger(GameSessionRunningClientState.class.getName());
     private static final float speed = 2.0f;
 
-    private final Consumer<RequestFlatBuffersSerializable> unicast;
+    private final Consumer<ByteBuffer> unicast;
     private final AtomicReference<String> gameCode = new AtomicReference<>("");
     private final AtomicLong
             gameLength,
@@ -45,13 +44,10 @@ public class GameSessionRunningClientState implements ClientState {
             startReceived = new AtomicBoolean(false);
 
     private Sprite rock,
-                   rock2;
+            rock2;
     private Player lastPlayerState,
-                   lastPlayerState2;
+            lastPlayerState2;
     private Texture background;
-    private int
-        oldFlipAnglePlayer1 = 90,
-        oldFlipAnglePlayer2 = 90;
     private BitmapFont font;
     private Animation<Sprite>
             animationStatePlayer1,
@@ -60,8 +56,11 @@ public class GameSessionRunningClientState implements ClientState {
             animationStatePlayer2,
             idleAnimationBlue,
             walkingAnimationBlue;
+    private int
+            oldFlipAnglePlayer1 = 90,
+            oldFlipAnglePlayer2 = 90;
 
-    public GameSessionRunningClientState(final Consumer<RequestFlatBuffersSerializable> unicast) {
+    public GameSessionRunningClientState(final Consumer<ByteBuffer> unicast) {
 
         this.unicast = unicast;
 
@@ -99,14 +98,17 @@ public class GameSessionRunningClientState implements ClientState {
                         .length())
                 .ifPresent(gameLength::set);
 
-        if (gameState.playersLength() == 1 && Objects.nonNull(gameState.players(0)) && Objects.nonNull(gameState.players(0).position())) {
-
-            if (lastPlayerState == null)
-                lastPlayerState = gameState.players(0);
+        if (gameState.playersLength() >= 1 && Objects.nonNull(gameState.players(0)) && Objects.nonNull(gameState.players(0).position())) {
 
             final var player1 = gameState.players(0);
-            final var translationX = player1.position().x() / 100f - lastPlayerState.position().x() / 100f;
-            final var translationY = player1.position().y() / 100f - lastPlayerState.position().y() / 100f;
+
+            if (lastPlayerState == null) {
+
+                lastPlayerState = player1;
+            }
+
+            final var translationX = (player1.position().x() - lastPlayerState.position().x()) / 100f;
+            final var translationY = (player1.position().y() - lastPlayerState.position().y()) / 100f;
 
             logger.log(Level.INFO, "Rendering player state x: {0} y: {1} rotationAngle: {2}", new Object[]{translationX, translationY, player1.position().rotation()});
 
@@ -118,12 +120,8 @@ public class GameSessionRunningClientState implements ClientState {
                 Arrays.stream(idleAnimationRed.getKeyFrames()).forEach(keyFrame -> keyFrame.flip(true, false));
             }
 
-            for (final var keyFrame : idleAnimationRed.getKeyFrames()) {
-
-                keyFrame.translate(translationX, translationY);
-            }
-
             Arrays.stream(walkingAnimationRed.getKeyFrames()).forEach(keyFrame -> keyFrame.translate(translationX, translationY));
+            Arrays.stream(idleAnimationRed.getKeyFrames()).forEach(keyFrame -> keyFrame.translate(translationX, translationY));
 
             lastPlayerState = player1;
         }
@@ -133,14 +131,17 @@ public class GameSessionRunningClientState implements ClientState {
             if (lastPlayerState == null)
                 lastPlayerState = gameState.players(0);
 
-            if (lastPlayerState2 == null)
-                lastPlayerState2 = gameState.players(1);
+            final var player2 = gameState.players(1);
+
+            if (lastPlayerState2 == null) {
+
+                lastPlayerState2 = player2;
+            }
 
             joined.set(true);
 
-            final var player2 = gameState.players(1);
-            final var translationX = player2.position().x() / 100f - lastPlayerState2.position().x() / 100f;
-            final var translationY = player2.position().y() / 100f - lastPlayerState2.position().y() / 100f;
+            final var translationX = (player2.position().x() - lastPlayerState2.position().x()) / 100f;
+            final var translationY = (player2.position().y() - lastPlayerState2.position().y()) / 100f;
 
             logger.log(Level.INFO, "Rendering player state x: {0} y: {1} rotationAngle: {2}", new Object[]{translationX, translationY, player2.position().rotation()});
 
@@ -151,6 +152,13 @@ public class GameSessionRunningClientState implements ClientState {
                 Arrays.stream(walkingAnimationBlue.getKeyFrames()).forEach(keyFrame -> keyFrame.flip(true, false));
                 Arrays.stream(idleAnimationBlue.getKeyFrames()).forEach(keyFrame -> keyFrame.flip(true, false));
             }
+
+            Arrays
+                    .stream(walkingAnimationBlue.getKeyFrames())
+                    .forEach(keyFrame -> keyFrame.translate(translationX, translationY));
+            Arrays
+                    .stream(idleAnimationBlue.getKeyFrames())
+                    .forEach(keyFrame -> keyFrame.translate(translationX, translationY));
 
             lastPlayerState2 = player2;
             stateRequested.set(false);
@@ -167,7 +175,7 @@ public class GameSessionRunningClientState implements ClientState {
 
         //https://www.bilibili.com/video/BV1Ta4y147gs?uid=425631546134793134376773&spm_id_from=333.788.videopod.episodes&p=13
 
-        if(Gdx.input.isKeyPressed(Input.Keys.TAB)) {
+        if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
 
             font.draw(batch, "Game code to join: " + gameCode.get(), Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() / 2f);
         }
@@ -187,7 +195,6 @@ public class GameSessionRunningClientState implements ClientState {
 
         rock.draw(batch);
         rock2.draw(batch);
-        //player1.draw(batch);
         animationStatePlayer1.getKeyFrame(deltaTime, true).draw(batch);
 
         if (joined.get())
@@ -196,41 +203,29 @@ public class GameSessionRunningClientState implements ClientState {
 
     private void processInputs() {
 
-        if(!startReceived.get() || stateRequested.get())
+        if (!startReceived.get() || stateRequested.get())
             return;
 
-        RequestFlatBuffersSerializable serializable = null;
+        ByteBuffer serializable = null;
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
 
-            serializable = new RequestFlatBuffersSerializable()
-                    .withGameStatus(GameStatus.STATE_CHANGE)
-                    .withPosition(new int[]{(int) lastPlayerState.position().x(), Math.round(lastPlayerState.position().y() + speed), 0});
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            serializable = (serializeStateRequest(new int[]{(int) lastPlayerState.position().x(), Math.round(lastPlayerState.position().y() + speed), 0}, Character.BLUE));
+        } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 
-            serializable = new RequestFlatBuffersSerializable()
-                    .withGameStatus(GameStatus.STATE_CHANGE)
-                    .withPosition(new int[]{Math.round(lastPlayerState.position().x() - speed), (int) lastPlayerState.position().y(), 270});
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            serializable = (serializeStateRequest(new int[]{Math.round(lastPlayerState.position().x() - speed), (int) lastPlayerState.position().y(), 270}, Character.BLUE));
+        } else if (Gdx.input.isKeyPressed(Input.Keys.S)) {
 
-            serializable = new RequestFlatBuffersSerializable()
-                    .withGameStatus(GameStatus.STATE_CHANGE)
-                    .withPosition(new int[]{(int) lastPlayerState.position().x(), Math.round(lastPlayerState.position().y() - speed), 180});
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            serializable = (serializeStateRequest(new int[]{(int) lastPlayerState.position().x(), Math.round(lastPlayerState.position().y() - speed), 180}, Character.BLUE));
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
 
-            serializable = new RequestFlatBuffersSerializable()
-                    .withGameStatus(GameStatus.STATE_CHANGE)
-                    .withPosition(new int[]{Math.round(lastPlayerState.position().x() + speed), (int) lastPlayerState.position().y(), 90});
+            serializable = (serializeStateRequest(new int[]{Math.round(lastPlayerState.position().x() + speed), (int) lastPlayerState.position().y(), 90}, Character.BLUE));
         }
 
         if (serializable == null)
             return;
 
         animationStatePlayer1 = walkingAnimationRed;
-        animationStatePlayer2 = walkingAnimationBlue;
 
         unicast.accept(serializable);
         stateRequested.set(true);
@@ -246,9 +241,7 @@ public class GameSessionRunningClientState implements ClientState {
 
                 if (keycode == Input.Keys.ESCAPE) {
 
-                    final var serializable = new RequestFlatBuffersSerializable().withGameStatus(GameStatus.STOP_SESSION);
-
-                    unicast.accept(serializable);
+                    unicast.accept(serializeStopRequest());
 
                     return true;
                 }
@@ -260,7 +253,6 @@ public class GameSessionRunningClientState implements ClientState {
             public boolean keyUp(int keycode) {
 
                 animationStatePlayer1 = idleAnimationRed;
-                animationStatePlayer2 = idleAnimationBlue;
 
                 return false;
             }
@@ -336,28 +328,32 @@ public class GameSessionRunningClientState implements ClientState {
         for (final var keyFrame : idleAnimationRed.getKeyFrames()) {
 
             keyFrame.setSize(1, 1);
-            keyFrame.setOrigin(0.5f, 0.5f);
+            keyFrame.setOrigin(4, 3);
+            keyFrame.translate(4f, 3f);
             disposables.add(keyFrame.getTexture());
         }
 
         for (final var keyFrame : walkingAnimationRed.getKeyFrames()) {
 
             keyFrame.setSize(1, 1);
-            keyFrame.setOrigin(0.5f, 0.5f);
+            keyFrame.setOrigin(4, 3);
+            keyFrame.translate(4f, 3f);
             disposables.add(keyFrame.getTexture());
         }
 
         for (final var keyFrame : idleAnimationBlue.getKeyFrames()) {
 
             keyFrame.setSize(1, 1);
-            keyFrame.setOrigin(0.5f, 0.5f);
+            keyFrame.setOrigin(4, 3);
+            keyFrame.translate(4f, 3f);
             disposables.add(keyFrame.getTexture());
         }
 
         for (final var keyFrame : walkingAnimationBlue.getKeyFrames()) {
 
             keyFrame.setSize(1, 1);
-            keyFrame.setOrigin(0.5f, 0.5f);
+            keyFrame.setOrigin(4, 3);
+            keyFrame.translate(4f, 3f);
             disposables.add(keyFrame.getTexture());
         }
 
@@ -366,5 +362,58 @@ public class GameSessionRunningClientState implements ClientState {
         disposables.add(font);
         disposables.add(background);
         disposables.add(generator);
+    }
+
+    public ByteBuffer serializeStateRequest(int[] position, byte character) {
+
+        final var builder = new FlatBufferBuilder(1024);
+        final var name = builder.createString("");
+        final var gameCode = builder.createString(this.gameCode.get());
+
+        Player.startPlayer(builder);
+        Player.addCharacter(builder, character);
+
+        if (Objects.nonNull(position)) {
+            Player.addPosition(builder, Position.createPosition(builder, position[0], position[1], position[2]));
+        }
+
+        Player.addName(builder, name);
+
+        final var player = Player.endPlayer(builder);
+
+        Request.startRequest(builder);
+        Request.addGameStatus(builder, GameStatus.STATE_CHANGE);
+        Request.addPlayer(builder, player);
+        Request.addGameCode(builder, gameCode);
+
+        final var gameStateRequest = Request.endRequest(builder);
+
+        builder.finish(gameStateRequest);
+
+        return ByteBuffer.wrap(builder.sizedByteArray());
+    }
+
+    public ByteBuffer serializeStopRequest() {
+
+        final var builder = new FlatBufferBuilder(1024);
+        final var name = builder.createString("");
+        final var gameCode = builder.createString(this.gameCode.get());
+
+        Player.startPlayer(builder);
+
+        Player.addName(builder, name);
+
+        final var player = Player.endPlayer(builder);
+
+        Request.startRequest(builder);
+        Request.addGameStatus(builder, GameStatus.STOP_SESSION);
+        Request.addPlayer(builder, player);
+        Request.addGameCode(builder, gameCode);
+
+        final var gameStateRequest = Request.endRequest(builder);
+
+        builder.finish(gameStateRequest);
+
+        return ByteBuffer.wrap(builder.sizedByteArray());
     }
 }

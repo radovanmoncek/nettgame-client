@@ -1,4 +1,4 @@
-package cz.radovanmoncek.modules.games.states;
+package cz.radovanmoncek.nettgame.client;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,24 +11,25 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import cz.radovanmoncek.modules.games.models.RequestFlatBuffersSerializable;
-import cz.radovanmoncek.ship.parents.states.ClientState;
-import cz.radovanmoncek.ship.tables.GameState;
-import cz.radovanmoncek.ship.tables.GameStatus;
-import cz.radovanmoncek.ship.tables.Character;
+import com.google.flatbuffers.FlatBufferBuilder;
+import cz.radovanmoncek.nettgame.tables.*;
+import cz.radovanmoncek.nettgame.tables.Character;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class MainMenuClientState implements ClientState {
-    private final Consumer<RequestFlatBuffersSerializable> unicast;
+    private final Consumer<ByteBuffer> unicast;
     private Stage stage;
     private Texture background;
     private TextField inputStart,
             inputJoin1,
             inputJoin2;
 
-    public MainMenuClientState(Consumer<RequestFlatBuffersSerializable> unicast) {
+    public MainMenuClientState(Consumer<ByteBuffer> unicast) {
 
         this.unicast = unicast;
     }
@@ -141,13 +142,7 @@ public class MainMenuClientState implements ClientState {
 
                                     if (character == 10) {
 
-                                        final var serializable = new RequestFlatBuffersSerializable()
-                                                .withGameStatus(GameStatus.JOIN_SESSION)
-                                                .withName(inputJoin1.getText())
-                                                .withGameCode(inputJoin2.getText())
-                                                .withCharacter(Character.BLUE);
-
-                                        unicast.accept(serializable);
+                                        unicast.accept(serializeJoinRequest(inputJoin1.getText(), inputJoin2.getText()));
                                     }
 
                                     return true;
@@ -199,14 +194,7 @@ public class MainMenuClientState implements ClientState {
 
                         if (character == 10) {
 
-                            final var serializable = new RequestFlatBuffersSerializable()
-                                    .withGameStatus(GameStatus.START_SESSION)
-                                    .withName(inputStart
-                                            .getText()
-                                            .trim()
-                                    );
-
-                            unicast.accept(serializable);
+                            unicast.accept(serializeStartRequest(inputStart.getText().trim()));
                         }
 
                         return true;
@@ -220,5 +208,57 @@ public class MainMenuClientState implements ClientState {
 
         disposables.add(stage);
         disposables.add(background);
+    }
+
+    public ByteBuffer serializeStartRequest(final String requestedName) {
+
+        final var builder = new FlatBufferBuilder(1024);
+        final var name = builder.createString(requestedName);
+
+        Player.startPlayer(builder);
+        Player.addCharacter(builder, Character.BLUE);
+
+        Player.addName(builder, name);
+
+        final var player = Player.endPlayer(builder);
+
+        Request.startRequest(builder);
+        Request.addGameStatus(builder, GameStatus.START_SESSION);
+        Request.addPlayer(builder, player);
+
+        final var gameStateRequest = Request.endRequest(builder);
+
+        builder.finish(gameStateRequest);
+
+        final var array = builder.sizedByteArray();
+
+        return ByteBuffer.wrap(array);
+    }
+
+    public ByteBuffer serializeJoinRequest(final String requestedName, final String requestedGameCode) {
+
+        final var builder = new FlatBufferBuilder(1024);
+        final var name = builder.createString(requestedName);
+        final var gameCode = builder.createString(requestedGameCode);
+
+        Player.startPlayer(builder);
+        Player.addCharacter(builder, Character.RED);
+
+        Player.addName(builder, name);
+
+        final var player = Player.endPlayer(builder);
+
+        Request.startRequest(builder);
+        Request.addGameStatus(builder, GameStatus.JOIN_SESSION);
+        Request.addPlayer(builder, player);
+        Request.addGameCode(builder, gameCode);
+
+        final var gameStateRequest = Request.endRequest(builder);
+
+        builder.finish(gameStateRequest);
+
+        final var array = builder.sizedByteArray();
+
+        return ByteBuffer.wrap(array);
     }
 }

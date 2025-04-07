@@ -1,9 +1,9 @@
-package cz.radovanmoncek.ship.parents.states;
+package cz.radovanmoncek.nettgame.client;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import cz.radovanmoncek.ship.tables.GameState;
+import cz.radovanmoncek.nettgame.tables.GameState;
 
 import java.util.LinkedList;
 
