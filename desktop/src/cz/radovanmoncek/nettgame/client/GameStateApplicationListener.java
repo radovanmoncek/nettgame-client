@@ -52,7 +52,7 @@ public class GameStateApplicationListener implements ApplicationListener {
      */
     private final AtomicReference<ClientState> clientState;
     private final ClientState mainMenuClientState,
-                              gameSessionRunningClientState;
+            gameSessionRunningClientState;
     private final AtomicBoolean ended = new AtomicBoolean(false);
     private final AtomicLong ping = new AtomicLong(0);
     private final AtomicReference<Socket> clientSocket = new AtomicReference<>();
@@ -65,7 +65,7 @@ public class GameStateApplicationListener implements ApplicationListener {
 
     private Viewport viewport;
     private SpriteBatch batch,
-                        noViewportBatch;
+            noViewportBatch;
     private float deltaTime;
 
     /**
@@ -83,7 +83,7 @@ public class GameStateApplicationListener implements ApplicationListener {
         reconnectDelayMilliseconds = 1000;
     }
 
-    public void create0(){
+    private void create0() {
 
         final var socketHints = new SocketHints();
 
@@ -91,11 +91,24 @@ public class GameStateApplicationListener implements ApplicationListener {
         socketHints.keepAlive = true;
         socketHints.tcpNoDelay = true;
 
-        clientSocket.set(Gdx
-                .net
-                .newClientSocket(Net.Protocol.TCP, gameServerAddress.getHostName(), gameServerPort, socketHints)
-        );
-        disposables.add(clientSocket.get());
+        while (clientSocket.get() == null || !clientSocket.get().isConnected()) {
+
+            try {
+
+                TimeUnit.MILLISECONDS.sleep(reconnectDelayMilliseconds);
+
+                clientSocket.set(Gdx
+                        .net
+                        .newClientSocket(Net.Protocol.TCP, gameServerAddress.getHostName(), gameServerPort, socketHints)
+                );
+                disposables.add(clientSocket.get());
+            } catch (Exception exception) {
+
+                Gdx
+                        .app
+                        .error("GameStateApplicationListener", "Failed to connect -> Reconnecting", exception);
+            }
+        }
 
         Executors
                 .defaultThreadFactory()
@@ -117,6 +130,8 @@ public class GameStateApplicationListener implements ApplicationListener {
 
                             while (!gameServerAddress.isReachable(1000) || !clientSocket.get().isConnected()) {
 
+                                TimeUnit.MILLISECONDS.sleep(reconnectDelayMilliseconds);
+
                                 clientState.set(mainMenuClientState);
                                 clientSocket
                                         .get()
@@ -129,8 +144,6 @@ public class GameStateApplicationListener implements ApplicationListener {
                                 Gdx
                                         .app
                                         .log("GameStateApplicationListener", "Got unreachable status, ping will not be reported");
-
-                                TimeUnit.MILLISECONDS.sleep(reconnectDelayMilliseconds);
                             }
 
                             final var end = System.nanoTime() - start;
@@ -297,7 +310,10 @@ public class GameStateApplicationListener implements ApplicationListener {
                     .error("GameStateApplicationListener", "Interrupted", e);
         }
 
-        disposables.forEach(Disposable::dispose);
+        disposables
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(Disposable::dispose);
     }
 
     @Override

@@ -66,7 +66,6 @@ public class MainMenuClientState implements ClientState {
     @Override
     public void initialize(LinkedList<Disposable> disposables) {
 
-        background = new Texture("badlogic.jpg");
         stage = new Stage();
 
         //https://stackoverflow.com/questions/21488311/how-to-create-a-button-in-libgdx
@@ -210,7 +209,7 @@ public class MainMenuClientState implements ClientState {
         disposables.add(background);
     }
 
-    public ByteBuffer serializeStartRequest(final String requestedName) {
+    private ByteBuffer serializeStartRequest(final String requestedName) {
 
         final var builder = new FlatBufferBuilder(1024);
         final var name = builder.createString(requestedName);
@@ -235,7 +234,7 @@ public class MainMenuClientState implements ClientState {
         return ByteBuffer.wrap(array);
     }
 
-    public ByteBuffer serializeJoinRequest(final String requestedName, final String requestedGameCode) {
+    private ByteBuffer serializeJoinRequest(final String requestedName, final String requestedGameCode) {
 
         final var builder = new FlatBufferBuilder(1024);
         final var name = builder.createString(requestedName);

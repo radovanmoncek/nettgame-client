@@ -266,50 +266,50 @@ public class GameSessionRunningClientState implements ClientState {
         final var generator = new FreeTypeFontGenerator(Gdx.files.internal("font/PressStart2P-Regular.ttf"));
         final var parameter = new FreeTypeFontGenerator
                 .FreeTypeFontParameter();
-        final var rockTexture = new Texture("characters/Free 2D Animated Vector Game Character Sprites/Environment/rock1.png");
-        final var rockTexture2 = new Texture("characters/Free 2D Animated Vector Game Character Sprites/Environment/rock2.png");
+        final var rockTexture = new Texture("Free 2D Animated Vector Game Character Sprites/Environment/rock1.png");
+        final var rockTexture2 = new Texture("Free 2D Animated Vector Game Character Sprites/Environment/rock2.png");
 
         parameter.size = 8;
 
         idleAnimationRed = new Animation<>(1f / 6f,
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_0.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_1.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_2.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_3.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_4.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_5.png"))
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_0.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_1.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_2.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_3.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_4.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/idle_5.png"))
         );
         walkingAnimationRed = new Animation<>(1f / 8f,
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_0.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_1.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_2.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_3.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_4.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_5.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_6.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_7.png"))
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_0.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_1.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_2.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_3.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_4.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_5.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_6.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 4/with hands/walk_7.png"))
         );
         animationStatePlayer1 = idleAnimationRed;
         idleAnimationBlue = new Animation<>(1f / 6f,
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_0.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_1.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_2.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_3.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_4.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_5.png"))
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_0.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_1.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_2.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_3.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_4.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/idle_5.png"))
         );
         walkingAnimationBlue = new Animation<>(1f / 8f,
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_0.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_1.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_2.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_3.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_4.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_5.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_6.png")),
-                new Sprite(new Texture("characters/Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_7.png"))
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_0.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_1.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_2.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_3.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_4.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_5.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_6.png")),
+                new Sprite(new Texture("Free 2D Animated Vector Game Character Sprites/Full body animated characters/Char 1/with hands/walk_7.png"))
         );
         animationStatePlayer2 = idleAnimationBlue;
-        background = new Texture("characters/Free 2D Animated Vector Game Character Sprites/Environment/ground_white.png");
+        background = new Texture("Free 2D Animated Vector Game Character Sprites/Environment/ground_white.png");
         rock = new Sprite(rockTexture);
         rock2 = new Sprite(rockTexture2);
         font = generator.generateFont(parameter);
@@ -364,7 +364,7 @@ public class GameSessionRunningClientState implements ClientState {
         disposables.add(generator);
     }
 
-    public ByteBuffer serializeStateRequest(int[] position, byte character) {
+    private ByteBuffer serializeStateRequest(int[] position, byte character) {
 
         final var builder = new FlatBufferBuilder(1024);
         final var name = builder.createString("");
@@ -393,7 +393,7 @@ public class GameSessionRunningClientState implements ClientState {
         return ByteBuffer.wrap(builder.sizedByteArray());
     }
 
-    public ByteBuffer serializeStopRequest() {
+    private ByteBuffer serializeStopRequest() {
 
         final var builder = new FlatBufferBuilder(1024);
         final var name = builder.createString("");

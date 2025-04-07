@@ -60,6 +60,9 @@ project(":desktop") {
 
         implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
 
+        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
+        implementation "com.google.flatbuffers:flatbuffers-java:25.2.10"
+
         //https://stackoverflow.com/questions/20700053/how-to-add-local-jar-file-dependency-to-build-gradle-file
         //https://www.baeldung.com/gradle-dependencies-local-jar
         //https://stackoverflow.com/questions/45792184/how-to-add-a-jar-file-to-an-existing-gradle-project
@@ -84,6 +87,9 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
+        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
+        implementation "com.google.flatbuffers:flatbuffers-java:25.2.10"
+
         implementation group: 'cz.radovanmoncek', name: 'nettgame-tables-1.0', version: '1.0'
     }
 }
@@ -103,7 +109,12 @@ project(":test"){
         implementation project(":desktop")
 
         // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
-        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.12.1'
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.13.0-M2'
+        //Massive thanks: https://github.com/junit-team/junit5/issues/4341
+        testImplementation("org.junit.platform:junit-platform-launcher")
+
+        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
+        implementation "com.google.flatbuffers:flatbuffers-java:25.2.10"
 
         implementation group: 'cz.radovanmoncek', name: 'nettgame-tables-1.0', version: '1.0'
     }
