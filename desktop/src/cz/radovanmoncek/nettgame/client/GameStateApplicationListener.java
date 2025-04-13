@@ -16,6 +16,7 @@ import cz.radovanmoncek.nettgame.tables.GameStatus;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -71,10 +72,10 @@ public class GameStateApplicationListener implements ApplicationListener {
     /**
      * Source: <a href = https://gamefromscratch.com/libgdx-tutorial-10-basic-networking/>gfs</a>
      */
-    private GameStateApplicationListener() {
+    private GameStateApplicationListener() throws UnknownHostException {
 
         gameServerPort = 4321;
-        gameServerAddress = InetAddress.getLoopbackAddress();
+        gameServerAddress = InetAddress.getByName("192.168.100.46")/*InetAddress.getLoopbackAddress()*/;
         gameStates = new ConcurrentLinkedQueue<>();
         disposables = new LinkedList<>();
         clientState = new AtomicReference<>();
@@ -332,7 +333,7 @@ public class GameStateApplicationListener implements ApplicationListener {
 
     //https://stackoverflow.com/questions/6307648/change-global-setting-for-logger-instances
 
-    public static GameStateApplicationListener returnNewInstance() {
+    public static GameStateApplicationListener returnNewInstance() throws UnknownHostException {
 
         return Objects.requireNonNullElse(instance, instance = new GameStateApplicationListener());
     }

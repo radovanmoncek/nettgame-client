@@ -59,6 +59,7 @@ public class GameSessionRunningClientState implements ClientState {
     private int
             oldFlipAnglePlayer1 = 90,
             oldFlipAnglePlayer2 = 90;
+    private long lastRequestedStateDelta;
 
     public GameSessionRunningClientState(final Consumer<ByteBuffer> unicast) {
 
@@ -203,9 +204,11 @@ public class GameSessionRunningClientState implements ClientState {
 
     private void processInputs() {
 
-        if (!startReceived.get() || stateRequested.get())
+        if((!startReceived.get() || stateRequested.get()) && System.nanoTime() - lastRequestedStateDelta <= 10000000000L)
             return;
 
+	lastRequestedStateDelta = System.nanoTime();
+	
         ByteBuffer serializable = null;
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {

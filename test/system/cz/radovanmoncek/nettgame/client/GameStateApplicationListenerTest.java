@@ -6,6 +6,8 @@ import org.junit.jupiter.api.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.net.UnknownHostException;
+import java.util.Random;
 import java.util.concurrent.Executors;
 
 //todo: use position attributes in ALL tests !!!! !!!!
@@ -19,22 +21,31 @@ import java.util.concurrent.Executors;
 public class GameStateApplicationListenerTest {
 
     private static Robot robot;
+    private static Random random = new Random();
 
     @BeforeAll
     static void setup() throws AWTException {
 
         Executors
                 .defaultThreadFactory()
-                .newThread(() -> NettgameClientLauncher.main(new String[]{"--winmode", "true"}))
+	    .newThread(() -> {
+		    try {
+			NettgameClientLauncher.main(new String[]{"--winmode", "true"});
+		       }
+		catch(UnknownHostException exception){
+		    Gdx.app.error("setup", "Unknown Host Exception", exception);
+		}
+		})
                 .start();
 
         robot = new Robot();
+        random = new Random();
     }
 
     @Test
     void testStartGame() {
 
-        robot.delay(8000);
+        robot.delay(60000);
         robot.mouseMove(Toolkit.getDefaultToolkit().getScreenSize().width / 2, Toolkit.getDefaultToolkit().getScreenSize().height / 2 + 5);
         robot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
         robot.delay(100);
@@ -58,18 +69,17 @@ public class GameStateApplicationListenerTest {
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_ENTER);
         robot.delay(2000);
-        robot.keyPress(KeyEvent.VK_W);
-        robot.delay(1000);
-        robot.keyRelease(KeyEvent.VK_W);
-        robot.keyPress(KeyEvent.VK_A);
-        robot.delay(1000);
-        robot.keyRelease(KeyEvent.VK_A);
-        robot.keyPress(KeyEvent.VK_S);
-        robot.delay(1000);
-        robot.keyRelease(KeyEvent.VK_S);
-        robot.keyPress(KeyEvent.VK_D);
-        robot.delay(1000);
-        robot.keyRelease(KeyEvent.VK_D);
+    }
+
+    @RepeatedTest(60)
+    void testMovement() {
+
+        final var movementPossibilities = new int[]{KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D};
+        final var randomMove = movementPossibilities[random.nextInt(movementPossibilities.length)];
+
+        robot.keyPress(randomMove);
+        robot.delay(100);
+        robot.keyRelease(randomMove);
     }
 
     @AfterAll

@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
+import java.net.UnknownHostException;
+
 public class NettgameClientLauncher {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnknownHostException {
 
         if (args.length == 0 || !args[0].equals("--winmode")) {
 
