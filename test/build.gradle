@@ -1,0 +1,13 @@
+sourceCompatibility = 21
+sourceSets.test.java.srcDirs = ["system/"]
+apply plugin: 'idea'
+
+test {
+
+    useJUnitPlatform()
+
+    //https://howtodoinjava.com/gradle/running-tests-with-gradle/
+    afterTest {desc, result ->
+            logger.quiet "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+    }
+}

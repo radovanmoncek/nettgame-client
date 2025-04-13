@@ -59,3 +59,7 @@ replay_pid*
 
 build/
 gradle/
+
+*.env
+
+assets/

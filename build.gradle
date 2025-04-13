@@ -1,5 +1,4 @@
 buildscript {
-    
 
     repositories {
         mavenLocal()
@@ -7,19 +6,22 @@ buildscript {
         gradlePluginPortal()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         google()
+        flatDir {
+
+            dirs('../libs')
+        }
     }
     dependencies {
-        
 
     }
 }
 
 allprojects {
-    apply plugin: "eclipse"
+    apply plugin: "idea"
 
     version = '1.0'
     ext {
-        appName = "My GDX Game"
+        appName = "example nettgame client"
         gdxVersion = '1.12.1'
         roboVMVersion = '2.3.20'
         box2DLightsVersion = '1.5'
@@ -42,21 +44,78 @@ allprojects {
 project(":desktop") {
     apply plugin: "java-library"
 
+    repositories {
+
+        flatDir {
+
+            dirs('../libs')
+        }
+    }
 
     dependencies {
         implementation project(":core")
         api "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        
+        api "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+
+        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
+        implementation "com.google.flatbuffers:flatbuffers-java:25.2.10"
+
+        //https://stackoverflow.com/questions/20700053/how-to-add-local-jar-file-dependency-to-build-gradle-file
+        //https://www.baeldung.com/gradle-dependencies-local-jar
+        //https://stackoverflow.com/questions/45792184/how-to-add-a-jar-file-to-an-existing-gradle-project
+        //https://www.matheusmello.io/posts/java-how-to-add-local-jar-file-dependency-to-build-gradle-file
+        //https://stackoverflow.com/questions/31471750/how-to-add-external-jar-files-in-gradle-project-inside-the-netbeans/40262145
+        implementation group: 'cz.radovanmoncek', name: 'nettgame-tables-1.0', version: '1.0'
     }
 }
 
 project(":core") {
     apply plugin: "java-library"
 
+    repositories {
+
+        flatDir {
+
+            dirs('../libs')
+        }
+    }
 
     dependencies {
         api "com.badlogicgames.gdx:gdx:$gdxVersion"
-        
+        api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+
+        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
+        implementation "com.google.flatbuffers:flatbuffers-java:25.2.10"
+
+        implementation group: 'cz.radovanmoncek', name: 'nettgame-tables-1.0', version: '1.0'
+    }
+}
+
+project(":test"){
+    apply plugin: "java-library"
+
+    repositories {
+
+        flatDir {
+
+            dirs('../libs')
+        }
+    }
+
+    dependencies {
+        implementation project(":desktop")
+
+        // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+        testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.13.0-M2'
+        //Massive thanks: https://github.com/junit-team/junit5/issues/4341
+        testImplementation("org.junit.platform:junit-platform-launcher")
+
+        // https://mvnrepository.com/artifact/com.google.flatbuffers/flatbuffers-java
+        implementation "com.google.flatbuffers:flatbuffers-java:25.2.10"
+
+        implementation group: 'cz.radovanmoncek', name: 'nettgame-tables-1.0', version: '1.0'
     }
 }
