@@ -72,10 +72,10 @@ public class GameStateApplicationListener implements ApplicationListener {
     /**
      * Source: <a href = https://gamefromscratch.com/libgdx-tutorial-10-basic-networking/>gfs</a>
      */
-    private GameStateApplicationListener() throws UnknownHostException {
+    private GameStateApplicationListener(final String address) throws UnknownHostException {
 
         gameServerPort = 4321;
-        gameServerAddress = InetAddress.getByName("192.168.100.46")/*InetAddress.getLoopbackAddress()*/;
+        gameServerAddress = InetAddress.getByName(address);
         gameStates = new ConcurrentLinkedQueue<>();
         disposables = new LinkedList<>();
         clientState = new AtomicReference<>();
@@ -333,8 +333,8 @@ public class GameStateApplicationListener implements ApplicationListener {
 
     //https://stackoverflow.com/questions/6307648/change-global-setting-for-logger-instances
 
-    public static GameStateApplicationListener returnNewInstance() throws UnknownHostException {
+    public static GameStateApplicationListener returnNewInstance(final String address) throws UnknownHostException {
 
-        return Objects.requireNonNullElse(instance, instance = new GameStateApplicationListener());
+        return Objects.requireNonNullElse(instance, instance = new GameStateApplicationListener(address));
     }
 }

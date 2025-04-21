@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 
 //todo: use position attributes in ALL tests !!!! !!!!
 /**
- * An integration test written, in part, to test containerized vs .jar performance of the Nettgame server.
+ * A system test written, in part, to test containerized vs .jar performance of the Nettgame server.
  *
  * @author Radovan Monček
  * @since 1.0
@@ -28,13 +28,18 @@ public class GameStateApplicationListenerTest {
 
         Executors
                 .defaultThreadFactory()
-	    .newThread(() -> {
-		    try {
-			NettgameClientLauncher.main(new String[]{"--winmode", "true"});
-		       }
-		catch(UnknownHostException exception){
-		    Gdx.app.error("setup", "Unknown Host Exception", exception);
-		}
+	        .newThread(() -> {
+
+			try {
+
+			    NettgameClientLauncher.main(new String[]{"--winmode", "true", "--server-address", "localhost"});
+			}
+			catch(UnknownHostException exception){
+
+			    Gdx
+				.app
+				.error("setup", "Unknown Host Exception", exception);
+			}
 		})
                 .start();
 
