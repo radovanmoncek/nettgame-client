@@ -14,9 +14,7 @@ public class NettgameClientLauncher {
 
             System.err.println("Window mode must be specified with the --winmode option");
 
-            Gdx
-                    .app
-                    .exit();
+            System.exit(1);
 
             return;
         }
@@ -25,13 +23,29 @@ public class NettgameClientLauncher {
 
             System.err.println("Invalid argument");
 
-            Gdx
-                    .app
-                    .exit();
+            System.exit(1);
 
             return;
         }
 
+        if (args.length > 2 && !args[2].equals("--server-address")) {
+
+            System.err.println("Server address must be specified using the --server-address option");
+
+            System.exit(1);
+
+            return;
+        }
+
+        if (args.length < 4 || args[3] == null) {
+
+            System.err.println("Please specify a valid IP address or hostname");
+
+	    System.exit(1);
+	    
+            return;
+        }
+	
         final var config = new Lwjgl3ApplicationConfiguration();
 
         config.setForegroundFPS(60);
@@ -41,6 +55,6 @@ public class NettgameClientLauncher {
         if (!Boolean.parseBoolean(args[1]))
             config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
 
-        new Lwjgl3Application(GameStateApplicationListener.returnNewInstance(), config);
+        new Lwjgl3Application(GameStateApplicationListener.returnNewInstance(args[3]), config);
     }
 }

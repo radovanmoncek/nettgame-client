@@ -17,6 +17,8 @@ tasks.register('run', JavaExec) {
 
     args += "--winmode"
     args += "true"
+    args += "--server-address"
+    args += "localhost"
 
     if (OperatingSystem.current() == OperatingSystem.MAC_OS) {
         // Required to run on macOS
