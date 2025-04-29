@@ -37,6 +37,6 @@ visit the website of each author !!!!*
 - character assets: <https://rgsdev.itch.io/free-cc0-modular-animated-vector-characters-2d>
 - UI: <https://andelrodis.itch.io/1-bit-game-ui-pack>
 
-#### Legal
+#### UML Class diagram
 
-The licence is **MIT**.
+![UML Class diagram](https://github.com/radovanmoncek/nettgame-client/blob/development/design/Nettgame_client_class_diagram.png)
